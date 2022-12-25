@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:yourirctc/globals.dart' as globals;
 
 var originStationCode;
 var destinationStationCode;
-bool apicall = false;
 
 class SearchForm extends StatefulWidget {
   const SearchForm({Key? key}) : super(key: key);
@@ -57,8 +57,10 @@ class _SearchFormState extends State<SearchForm> {
                 child: ElevatedButton(onPressed: () {
                   originStationCode = originStation.text;
                   destinationStationCode = destinationStation.text;
+                  globals.originStation = originStationCode;
+                  globals.destinationStation = destinationStationCode;
                   setState(() {
-                    apicall = true;
+                    globals.apicall = true;
                   });
                 },
                   style: ElevatedButton.styleFrom(
