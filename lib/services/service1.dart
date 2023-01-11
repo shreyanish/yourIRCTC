@@ -1,14 +1,15 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:yourirctc/globals.dart' as globals;
 
 
 class Service1 {
-  Future trainsBetweenStations() async {
-    var apiurl = "https://irctc1.p.rapidapi.com/api/v2/trainBetweenStations?fromStationCode=bju&toStationCode=cbe";
+  Future trainsBetweenStations(s1, s2) async {
+    var apiurl = "https://irctc1.p.rapidapi.com/api/v2/trainBetweenStations?fromStationCode=$s1&toStationCode=$s2";
     final url = Uri.parse(apiurl);
     final header = {
-      "X-RapidAPI-Key": '13eafc7b81mshcaf8edf9ba380f8p17a17bjsnbadbea627916',
+      "X-RapidAPI-Key": 'b6f68d66e4msh71770ebe7b52cb9p10f07ejsn9e9413a7f949',
       "X-RapidAPI-Host": "irctc1.p.rapidapi.com",
       "useQueryString": "true"
     };
@@ -22,30 +23,22 @@ class Service1 {
     }
   }
 
-  Future trainDetails(List details) async {
-    List trainDetails2 = [];
-    List allDetails = [];
-    for (var i = 0; i < details.length; i++) {
-      var trainNumber = details[i]['train_number'];
-      print(i);
-      var apiurl = "https://irctc1.p.rapidapi.com/api/v1/getTrainSchedule?trainNo=${trainNumber}";
-      print(apiurl);
-      final url = Uri.parse(apiurl);
-      final header = {
-        "X-RapidAPI-Key": '13eafc7b81mshcaf8edf9ba380f8p17a17bjsnbadbea627916',
-        "X-RapidAPI-Host": "irctc1.p.rapidapi.com",
-        "useQueryString": "true"
-      };
-      final response = await http.get(url,headers: header);
-      print(response.body);
-      List listResponse2 = jsonDecode(response.body)['data']['route'];
-      var platformNumber = listResponse2[0]['platform_number'];
-      var stop = listResponse2[0]['stop'];
-      trainDetails2.add([platformNumber, stop]);
+  Future trainDetails(trainno) async {
+    var apiurl2 = "https://irctc1.p.rapidapi.com/api/v2/trainBetweenStations?trainNo=$trainno";
+    print(apiurl2);
+    final url2 = Uri.parse(apiurl2);
+    final header2 = {
+      "X-RapidAPI-Key": 'b6f68d66e4msh71770ebe7b52cb9p10f07ejsn9e9413a7f949',
+      "X-RapidAPI-Host": "irctc1.p.rapidapi.com",
+      "useQueryString": "true"
+    };
+    final response2 = await http.get(url2,headers: header2);
+    print(response2.body);
+    if (response2.statusCode == 200) {
+      List listResponse = jsonDecode(response2.body)['data']['route'];
+      globals.apicall2 = true;
+      return listResponse;
     }
-    allDetails.add(details);
-    allDetails.add(trainDetails2);
-    return allDetails;
   }
 
 }

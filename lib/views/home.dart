@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:yourirctc/services/service1.dart';
 import 'package:yourirctc/views/search_form2.dart';
 import 'package:yourirctc/views/widgets/train_card.dart';
 import 'package:yourirctc/auth_service.dart';
+import 'package:yourirctc/globals.dart' as globals;
+
 
 
 
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //String? user = FirebaseAuth.instance.currentUser!.email ?? FirebaseAuth.instance.currentUser!.displayName;
   List? trainBetweenStations;
+  List? trainSchedule;
   var isFetched1 = false;
 
   @override
@@ -27,15 +29,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   getData1 () async {
-    trainBetweenStations = await Service1().trainsBetweenStations();
-    if (trainBetweenStations != null) {
-      print(trainBetweenStations![0]);
-      print(trainBetweenStations![1]);
-      setState(() {
-        isFetched1 = true;
-      });
-    }
+    trainBetweenStations = await globals.trainDetails();
+    print(trainBetweenStations);
+    setState(() {
+      isFetched1 = true;
+    });
   }
+
+
 
 
   @override
@@ -116,20 +117,18 @@ class _HomePageState extends State<HomePage> {
           const SearchForm(),
           Visibility(
             visible: isFetched1,
-            replacement: const CircularProgressIndicator(),
+            replacement: const Center(child: CircularProgressIndicator(),),
             child: SizedBox(
-              height: MediaQuery.of(context).size.height /1.7 ,
+              height: MediaQuery.of(context).size.height /1.8 ,
               child: ListView.builder(
-                  itemCount: trainBetweenStations?[0].length,
+                  itemCount: trainBetweenStations?.length,
                   itemBuilder: (context, index) {
-                    var trainName = trainBetweenStations![0][index]['train_name'];
-                    var trainNumber = trainBetweenStations![0][index]['train_number'];
-                    var departTime = trainBetweenStations![0][index]['depart_time'];
-                    var arrivalTime = trainBetweenStations![0][index]['arrival_time'];
-                    var distance = trainBetweenStations![0][index]['distance'];
-                    var platformNumber = "";
-                    var stop = "";
-                    return TrainCard(trainName: trainName, trainNumber: trainNumber, platformNumber: platformNumber, startTime: departTime, endTime: arrivalTime, distance: distance, boolStop: stop);
+                    var trainName = trainBetweenStations![index]['train_name'];
+                    var trainNumber = trainBetweenStations![index]['train_number'];
+                    var departTime = trainBetweenStations![index]['depart_time'];
+                    var arrivalTime = trainBetweenStations![index]['arrival_time'];
+                    var distance = trainBetweenStations![index]['distance'];
+                    return TrainCard(trainName: trainName, trainNumber: trainNumber, startTime: departTime, endTime: arrivalTime, distance: distance);
               },
               ),
             ),

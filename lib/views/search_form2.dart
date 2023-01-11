@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yourirctc/globals.dart' as globals;
+import '../services/service1.dart';
 
-var originStationCode;
-var destinationStationCode;
 
 class SearchForm extends StatefulWidget {
   const SearchForm({Key? key}) : super(key: key);
@@ -54,14 +53,14 @@ class _SearchFormState extends State<SearchForm> {
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: ElevatedButton(onPressed: () {
-                  originStationCode = originStation.text;
-                  destinationStationCode = destinationStation.text;
-                  globals.originStation = originStationCode;
-                  globals.destinationStation = destinationStationCode;
-                  setState(() {
-                    globals.apicall = true;
-                  });
+                child: ElevatedButton(onPressed: () async {
+                  globals.s1 = originStation.text.toString().toLowerCase();
+                  globals.s2 = destinationStation.text.toString().toLowerCase();
+                  print(globals.s1);
+                  print(globals.s2);
+                  globals.trainBetweenStations = await Service1().trainsBetweenStations(globals.s1, globals.s2);
+                  print(globals.trainBetweenStations);
+                  globals.apicall = true;
                 },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
