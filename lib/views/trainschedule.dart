@@ -1,24 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yourirctc/views/widgets/station_card.dart';
-import 'package:yourirctc/views/widgets/train_card.dart';
-import 'package:yourirctc/auth_service.dart';
 import 'package:yourirctc/globals.dart' as globals;
 
+import '../auth_service.dart';
 import 'bookmark.dart';
 
 
-
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class TrainPage extends StatefulWidget {
+  const TrainPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TrainPage> createState() => _TrainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  //String? user = FirebaseAuth.instance.currentUser!.email ?? FirebaseAuth.instance.currentUser!.displayName;
-  List? trainBetweenStations;
+class _TrainPageState extends State<TrainPage> {
   List? trainSchedule;
   var isFetched1 = false;
 
@@ -30,22 +25,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   getData1 () async {
-    trainBetweenStations = await globals.trainbwStations();
-    print(trainBetweenStations);
+    trainSchedule = await globals.trainDetails();
+    print(trainSchedule);
     setState(() {
       isFetched1 = true;
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:  [
+        children: [
           Padding(
             padding: const EdgeInsets.only(top: 100, left: 25),
             child: Row(
@@ -67,23 +59,23 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       children: [
                         const Icon(Icons.train,
-                        color: Colors.blueAccent,
-                        size: 50,),
+                          color: Colors.blueAccent,
+                          size: 50,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: const [
                             Text("Your",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black
-                            ),),
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.black
+                              ),),
                             Text("IRCTC",
-                            style: TextStyle(
-                              fontSize: 23,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black,
-                            ),
+                              style: TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black,
+                              ),
                             )
                           ],
                         ),
@@ -120,25 +112,32 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          StationCard(startStation: globals.s1, endStation: globals.s2),
           Visibility(
             visible: isFetched1,
-            replacement: const Center(child: CircularProgressIndicator(),),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height /1.5 ,
-              child: ListView.builder(
-                  itemCount: trainBetweenStations?.length,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height /1.2 ,
+                child: ListView.builder(
+                  itemCount: trainSchedule?.length,
                   itemBuilder: (context, index) {
-                    var trainName = trainBetweenStations![index]['train_name'];
-                    var trainNumber = trainBetweenStations![index]['train_number'];
-                    var departTime = trainBetweenStations![index]['depart_time'];
-                    var arrivalTime = trainBetweenStations![index]['arrival_time'];
-                    var distance = trainBetweenStations![index]['distance'];
-                    return TrainCard(trainName: trainName, trainNumber: trainNumber, startTime: departTime, endTime: arrivalTime, distance: distance);
-              },
+                    var pn = trainSchedule![index]['platform_number'];
+                    var stname = trainSchedule![index]['state_name'];
+                    var snname = trainSchedule![index]['station_name'];
+                    var stop = trainSchedule![index]['stop'];
+                    var stdmin = trainSchedule![index]['std_min'];
+                    return Column(
+                      children: [
+                        Text('Route $index'),
+                        Text('Platform Number - $pn'),
+                        Text('State Name - $stname'),
+                        Text('Station Name - $snname'),
+                        Text('Stop - $stop'),
+                        Text('Std Min - $stdmin'),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-          )
+          ),
         ],
       ),
     );

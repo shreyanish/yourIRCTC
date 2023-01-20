@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:yourirctc/views/home.dart';
 import 'package:yourirctc/views/search_form2.dart';
 import 'login.dart';
 
@@ -11,12 +11,13 @@ class AuthService{
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            return const HomePage();
+            return const SearchForm();
           } else {
             return const LoginPage();
           }
         });
   }
+
 
   signInWithGoogle() async {
     // Trigger the authentication flow
@@ -40,5 +41,20 @@ class AuthService{
     FirebaseAuth.instance.signOut();
   }
 
+  getProfileImage() {
+    if(FirebaseAuth.instance.currentUser?.photoURL != null) {
+      return Image.network(FirebaseAuth.instance.currentUser?.photoURL ?? '', height: 125, width: 125,).image;
+    } else {
+      return const Icon(Icons.account_circle, size: 125);
+    }
+  }
+
+  getProfileImageS() {
+    if(FirebaseAuth.instance.currentUser?.photoURL != null) {
+      return Image.network(FirebaseAuth.instance.currentUser?.photoURL ?? '', height: 50, width: 50,);
+    } else {
+      return const Icon(Icons.account_circle, size: 50);
+    }
+  }
 
 }
